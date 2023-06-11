@@ -120,7 +120,8 @@ LDSCRIPT= $(STARTUPLD)/STM32F76xxI.ld
 # setting.
 CSRC = $(ALLCSRC) \
        $(TESTSRC) \
-       $(PROJECT_CSRC)
+       $(PROJECT_CSRC) \
+       $(CHIBIOS)/os/various/evtimer.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
