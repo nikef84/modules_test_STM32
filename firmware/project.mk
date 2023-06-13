@@ -1,5 +1,6 @@
 # C source files
 PROJECT_CSRC 	= 	src/main.c \
+					src/i2c/i2c_lld.c \
 
 					
 					
@@ -10,7 +11,9 @@ TESTSRC 	=
 # C++ source files
 PROJECT_CPPSRC 	= 
 # Directories to search headers in
-PROJECT_INCDIR	= include \
+PROJECT_INCDIR	= 	include \
+				  	include/i2c \
+				  	
  
 
 # Additional libraries
