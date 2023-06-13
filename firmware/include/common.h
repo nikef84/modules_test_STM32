@@ -9,10 +9,11 @@
 #include <tests.h>
 
 // List of all possible programs
-#define MAIN_ROUTINE              0
+#define MAIN_ROUTINE              	0
+#define LASER_RANGEFINDER         	1
 
 
 // Selection of program to run
-#define PROGRAM_ROUTINE MAIN_ROUTINE
+#define PROGRAM_ROUTINE LASER_RANGEFINDER
 
 #endif /* INCLUDE_COMMON_H_ */

@@ -2,9 +2,9 @@
 
 
 static inline void testRoutines(void) {
-//#if(PROGRAM_ROUTINE == I2C_TEST)
-//    test_i2c();
-//#endif
+#if(PROGRAM_ROUTINE == LASER_RANGEFINDER)
+    laser_rangefinder_test();
+#endif
 }
 
 

@@ -1,5 +1,6 @@
 #include "i2c_lld.h"
 
+static I2CDriver    *LR_Driver = &I2CD1; // LR - laser rengefinder.
 
 static const I2CConfig i2c_conf = {
     .timingr = STM32_TIMINGR_PRESC(14U)  |
@@ -90,9 +91,8 @@ msg_t i2cSimpleRead(uint8_t device, uint8_t *rxbuf, uint8_t length){
 	}
     return msg;
 }
-
-uint8_t register_address[1] = {0};
-
+#include "terminal_write.h"
+uint16_t register_address[1] = {0};
 /**
  * @brief   Read multiple bytes of data from specific register of slave
  * @details Function writes register address data to slave and then performs
@@ -110,12 +110,15 @@ uint8_t register_address[1] = {0};
  *                          be retrieved using @p i2cGetErrors().
  * @retval  MSG_TIMEOUT     if a timeout occurred before operation end.
  */
-msg_t i2cRegisterRead(uint8_t device, uint8_t register_addr, uint8_t *rxbuf, uint8_t length){
+msg_t i2cRegisterRead(uint8_t device, uint16_t register_addr, uint8_t *rxbuf, uint8_t length){
 	msg_t msg;
     register_address[0] = register_addr;
+    dbgPrintf("add = %d\r\n", register_address[0]);
 	switch (device){
 	case DEVICE_LR:
-		msg = i2cMasterTransmitTimeout(LR_Driver, LR_ADDRESS, register_address, 1, rxbuf, length, 1000);
+		dbgPrintf("%d\r\n", *rxbuf);
+		msg = i2cMasterTransmitTimeout(LR_Driver, LR_ADDRESS, (uint8_t *)register_address, 2, rxbuf, length, 1000);
+		dbgPrintf("%d\r\n", *rxbuf);
 		break;
 	default:
 		break;
