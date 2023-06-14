@@ -10,7 +10,8 @@
 
 // List of all possible programs
 #define MAIN_ROUTINE              	0
-#define LASER_RANGEFINDER         	1
+#define I2C				         	1
+#define LASER_RANGEFINDER         	2
 
 
 // Selection of program to run

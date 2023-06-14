@@ -4,6 +4,8 @@
 static inline void testRoutines(void) {
 #if(PROGRAM_ROUTINE == LASER_RANGEFINDER)
     laser_rangefinder_test();
+#elif(PROGRAM_ROUTINE == I2C)
+    i2c_test();
 #endif
 }
 
