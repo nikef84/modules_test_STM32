@@ -14,6 +14,6 @@ void i2cSimpleInit(void);
 void i2cSimpleStop(void);
 msg_t i2cSimpleWrite(uint8_t address, uint8_t *txbuf, uint8_t length);
 msg_t i2cSimpleRead(uint8_t address, uint8_t *rxbuf, uint8_t length);
-msg_t i2cRegisterRead(uint8_t address, uint16_t register_addr, uint8_t *rxbuf, uint8_t length);
+msg_t i2cRegisterRead(uint8_t address, uint8_t *reg_address, uint8_t reg_lenght, uint8_t *rxbuf, uint8_t data_length);
 
 #endif /* INCLUDE_I2C_I2C_LLD_H_ */

@@ -84,7 +84,6 @@ uint16_t register_address[1] = {0};
  *                          be retrieved using @p i2cGetErrors().
  * @retval  MSG_TIMEOUT     if a timeout occurred before operation end.
  */
-msg_t i2cRegisterRead(uint8_t address, uint16_t register_addr, uint8_t *rxbuf, uint8_t length){
-    register_address[0] = register_addr;
-	return i2cMasterTransmitTimeout(i2c1, address, (uint8_t *)register_address, 2, rxbuf, length, 1000);
+msg_t i2cRegisterRead(uint8_t address, uint8_t *reg_address, uint8_t reg_lenght, uint8_t *rxbuf, uint8_t data_length){
+	return i2cMasterTransmitTimeout(i2c1, address, reg_address, reg_lenght, rxbuf, data_length, 1000);
 }
