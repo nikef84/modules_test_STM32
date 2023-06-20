@@ -1,14 +1,17 @@
 # C source files
 PROJECT_CSRC 	= 	src/main.c \
+					src/terminal_write.c \
 					src/i2c/i2c_lld.c \
 					src/i2c/laser_rangefinder.c \
-					src/terminal_write.c \
+					src/i2c/led_matrix.c \
+					
 					
 
 					
 					
 TESTSRC 	= 		tests/i2c/laser_rangefinder_test.c \
 					tests/i2c/i2c_test.c \
+					tests/i2c/led_matrix_test.c \
 					
 					
 

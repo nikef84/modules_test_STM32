@@ -6,6 +6,9 @@ static inline void testRoutines(void) {
     laser_rangefinder_test();
 #elif(PROGRAM_ROUTINE == I2C)
     i2c_test();
+#elif(PROGRAM_ROUTINE == LED_MATRIX)
+    led_matrix_test();
+
 #endif
 }
 

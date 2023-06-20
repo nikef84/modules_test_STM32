@@ -12,9 +12,10 @@
 #define MAIN_ROUTINE              	0
 #define I2C				         	1
 #define LASER_RANGEFINDER         	2
+#define LED_MATRIX		         	3
 
 
 // Selection of program to run
-#define PROGRAM_ROUTINE LASER_RANGEFINDER
+#define PROGRAM_ROUTINE LED_MATRIX
 
 #endif /* INCLUDE_COMMON_H_ */
