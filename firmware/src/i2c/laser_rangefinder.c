@@ -1,10 +1,19 @@
 #include "laser_rangefinder.h"
-#include "terminal_write.h"
 
 msg_t msg_error = MSG_OK;
 
+/*
+ * @brief 	Contains recomended privit and public settings.
+ *
+ * @note	Below are the recommended settings required to be loaded onto
+ * 			the VL6180X during the initialisation of the device.
+ *
+ * @note	The program works with this configuration. PLS, DO NOT TOUCH! :)
+ *
+ * @notapi
+ */
 void set_init_setting(void){
-
+	// Private registers.
 	lrRegisterWrite(0x0207, 0x01);
 	lrRegisterWrite(0x0208, 0x01);
 	lrRegisterWrite(0x0096, 0x00);
@@ -36,88 +45,106 @@ void set_init_setting(void){
 	lrRegisterWrite(0x01a7, 0x1f);
 	lrRegisterWrite(0x0030, 0x00);
 
-	lrRegisterWrite(0x0011, 0x10);
-	lrRegisterWrite(0x010a, 0x30);
-	lrRegisterWrite(0x003f, 0x46);
+	lrRegisterWrite(0x016, 0x00);
+
+	// Public registers.
+
+	lrRegisterWrite(0x001b, 0x09);
 	lrRegisterWrite(0x0031, 0xFF);
-	lrRegisterWrite(0x0040, 0x63);
 	lrRegisterWrite(0x002e, 0x01);
 
+	lrRegisterWrite(0x001c, 0x32);
+	lrRegisterWrite(0x002d, 0x10 | 0x01);
+
+	lrRegisterWrite(0x0022, 0x00);
+	lrRegisterWrite(0x0022 + 1, 0x7B);
+
+	lrRegisterWrite(0x003e, 0x0A);
+
+	lrRegisterWrite(0x003e + 1, 0x63);
+
+	lrRegisterWrite(0x010a, 0x30);
+
+	lrRegisterWrite(0x003f, 0x46);
+
+	lrRegisterWrite(0x0120, 0x01);
+
+	// Configure the interrupts
+	lrRegisterWrite(0x0010, 0x00);
+	lrRegisterWrite(0x0011, 0x30);
+	lrRegisterWrite(0x0014, 0x24);
+
+	// enable continuous range mode
+	if (LR_MODE == CONTINUOUS_MODE){
+		lrRegisterWrite(0x0018, 0x03);
+	}
 }
 
-
+/*
+ * @brief 	Inits I2C and sets the settings to the rangefinder sensor.
+ *
+ * @note I2CD1 is used.
+ */
 void lrInit(void){
 	i2cSimpleInit();
-	uint8_t txbuf[3];
-	txbuf[0] = 0x00;
-	txbuf[1] = 0x16;
-	txbuf[2] = 0x1;
-	i2cSimpleWrite(LR_ADDRESS, txbuf, 3);
-	chThdSleepMilliseconds(10);
-	uint8_t mode = lrRegisterRead(REG_SET_SETTINGS);
 
-	if (mode == MODE_START_SET_SETTINGS){
-		dbgPrintf("ok\r\n");
+	uint8_t mode = lrRegisterRead(0x0016);
+	//  if that bit set, then device has been freshly initialized.
+	if (mode == 0x01){
 		set_init_setting();
-		lrRegisterWrite(REG_SET_SETTINGS, MODE_STOP_SET_SETTINGS);
 	}
-	if (LR_MODE == CONTINUOUS_MODE)lrRegisterWrite(0x018, 0x03);
 
 }
 
+/*
+ * @brief	Writes the data to the rangefinder sensor.
+ *
+ * @param_in	reg_address 	The address of the register to which we want to write information.
+ * 							  	Must be 2 bytes!
+ *
+ * 				data 			The information we want to write to the selected register.
+ * 								Must be 1 byte!
+ */
 void lrRegisterWrite(uint16_t reg_address, uint8_t data){
-	uint8_t res;
-	do {
-		res = lrRegisterRead(0x004d);
-		//dbgPrintf("%d\r\n", res);
-	} while((res & 0x01) != 1);
-	uint8_t txbuf[3];
-	txbuf[0] = (reg_address >> 8) & 0xFF;
-	txbuf[1] = reg_address & 0xFF;
-	txbuf[2] = data & 0xFF;
-
+	uint8_t txbuf[3] = {(reg_address >> 8) & 0xFF, reg_address, data};
 	msg_error = i2cSimpleWrite(LR_ADDRESS, txbuf, 3);
 	chThdSleepMilliseconds(10);
 }
 
+/*
+ * @brief	Reads the data in the register from the rangefinder sensor.
+ *
+ * @param_in	reg_address 	The address of the register to which we want to write information.
+ * 							  	Must be 2 bytes!
+ *
+ * param_out	data			The data that is stored in the register.
+ */
 uint8_t lrRegisterRead(uint16_t reg_address){
-	uint8_t txbuf[2];
+	uint8_t txbuf[2] = {(reg_address >> 8) & 0xFF, reg_address};
 	uint8_t data = 0;
-	txbuf[0] = (reg_address >> 8) & 0xFF;
-	txbuf[1] = reg_address & 0xFF;
 	msg_error = i2cRegisterRead(LR_ADDRESS, txbuf, 2, &data, 1);
 	chThdSleepMilliseconds(10);
 	return data;
 }
 
-
-//
-//void lr_poll(void){
-//	char status;
-//	char range_status;
-//
-//	// check the status
-//	status = lrRegisterRead(0x04f);
-//	range_status = status & 0x07;
-//
-//	// wait for new measurement ready status
-//	while (range_status != 0x04) {
-//		status = lrRegisterRead(0x04f);
-//		range_status = status & 0x07;
-//		dbgPrintf("%d\r\n", status);
-//	}
-//}
-
+/*
+ * @brief	Clears the interrupts.
+ *
+ * @notapi
+ */
 void lr_clear_interrupts(void) {
 	lrRegisterWrite(0x015,0x07);
 }
 
+/*
+ * @brief	Reads the range from the rangefinder sensor.
+ *
+ * param_out	data			The range from the sensor to the object. (1 byte)
+ *								The result is equal to the range in mm.
+ */
 uint8_t lrReadResult(void){
-	//lr_poll();
 	if (LR_MODE == ONE_SHOT_MODE)lrRegisterWrite(0x0018, 0x01);
 	uint8_t res = lrRegisterRead(0x062);
-	dbgPrintf("inter = %d\r\n", lrRegisterRead(0x015));
 	lr_clear_interrupts();
-	dbgPrintf("inter = %d\r\n", lrRegisterRead(0x015));
 	return res;
 }
