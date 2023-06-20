@@ -1,16 +1,23 @@
 # C source files
 PROJECT_CSRC 	= 	src/main.c \
+					src/i2c/i2c_lld.c \
+					src/i2c/laser_rangefinder.c \
+					src/terminal_write.c \
+					
 
 					
 					
-TESTSRC 	= 		
-
+TESTSRC 	= 		tests/i2c/laser_rangefinder_test.c \
+					tests/i2c/i2c_test.c \
+					
 					
 
 # C++ source files
 PROJECT_CPPSRC 	= 
 # Directories to search headers in
-PROJECT_INCDIR	= include \
+PROJECT_INCDIR	= 	include \
+				  	include/i2c \
+				  	
  
 
 # Additional libraries
