@@ -63,6 +63,28 @@ git push --set-upstream origin branch-name
 
 ``` git config --global --unset http.proxy ```
 
+## Сохранение персональных данных
+
+Имя пользователя:
+
+``` git config --global user.name "GeeksforGeeks" ```
+
+Почта:
+
+``` git config --global user.email "GFGexample@gmail.orgg" ```
+
+Пароль:
+
+``` git config --global user.password "1234321" ```
+
+Сохранить данные навсегда:
+
+``` git config --global credential.helper store ```
+
+Проверить сохранёные данные:
+
+``` git config --list --show-origin ```
+
 # Заключение
 
 Здесь описан самый минимум комманд для работы с гитом. Если хотите научится большему - в сети можно найти бесконечное количество различной информации в том числе на русском языке.
