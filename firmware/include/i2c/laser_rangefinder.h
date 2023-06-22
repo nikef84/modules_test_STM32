@@ -3,7 +3,7 @@
 
 #include "i2c_lld.h"
 
-// Address of laser rangefinder VL6180X. LR - laser rengefinder.
+// Address of the laser rangefinder VL6180X. LR - laser rengefinder.
 #define LR_ADDRESS						0b0101001
 
 // Possible operating modes.

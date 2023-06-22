@@ -1,28 +1,39 @@
 #include "common.h"
-#include "terminal_write.h"
 #include "led_matrix.h"
 
 
+bool flag = false;
 
+void palcb_button(void* args){
+    args = args;
+    flag = true;
+}
+
+// Use the button to change the picture.
 void led_matrix_test(void){
     halInit();
     chSysInit();
-    debugStreamInit();
-    dbgPrintf("Start\r\n");
-    i2cSimpleInit();
+    palSetPadMode(GPIOC, GPIOC_BUTTON, PAL_MODE_INPUT_PULLDOWN);
+    palEnablePadEvent(GPIOC, GPIOC_BUTTON, PAL_EVENT_MODE_RISING_EDGE);
+    palSetPadCallback(GPIOC, GPIOC_BUTTON, palcb_button, NULL);
+    lmInit();
     chThdSleepMilliseconds(100);
-    //uint8_t buf[2] = {0x00, 0x00};
-    //i2cSimpleWrite(LM_ADDRESS, buf, 2);
-    chThdSleepMilliseconds(100);
-    uint8_t tx[1] = {0x00};
-    uint8_t rx[1]  ={0x02};
-    msg_t msg = MSG_OK;
 
-
+    lmPicHeart();
+    bool picture = true;
     while (true) {
-    	palToggleLine(LINE_LED3);
-    	msg = i2cMasterTransmitTimeout(&I2CD1, LM_ADDRESS, tx, 1, rx, 1, 1000);
-    	dbgPrintf("msg = %d\t err = %d\r\n", msg, i2cGetErrors(&I2CD1));
-    	chThdSleepMilliseconds(100);
+    	if (flag == true){
+    		if (picture == true) {
+    			picture = false;
+    			lmPicSkull();
+    		}
+    		else {
+    			picture = true;
+				lmPicHeart();
+    		}
+    		flag = false;
+    	}
+    	lmGradientBrightness();
+    	chThdSleepMilliseconds(50);
     }
 }
