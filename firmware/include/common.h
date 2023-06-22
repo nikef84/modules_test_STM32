@@ -13,6 +13,7 @@
 #define I2C				         	1
 #define LASER_RANGEFINDER         	2
 #define LED_MATRIX		         	3
+#define GYRO		         		4
 
 
 // Selection of program to run

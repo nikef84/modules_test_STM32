@@ -8,7 +8,8 @@ static inline void testRoutines(void) {
     i2c_test();
 #elif(PROGRAM_ROUTINE == LED_MATRIX)
     led_matrix_test();
-
+#elif(PROGRAM_ROUTINE == GYRO)
+    gyro_test();
 #endif
 }
 
