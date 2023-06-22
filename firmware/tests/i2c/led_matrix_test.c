@@ -18,7 +18,6 @@ void led_matrix_test(void){
     palSetPadCallback(GPIOC, GPIOC_BUTTON, palcb_button, NULL);
     lmInit();
     chThdSleepMilliseconds(100);
-
     lmPicHeart();
     bool picture = true;
     while (true) {
@@ -34,6 +33,7 @@ void led_matrix_test(void){
     		flag = false;
     	}
     	lmGradientBrightness();
-    	chThdSleepMilliseconds(50);
+
+    	chThdSleepMilliseconds(100);
     }
 }
