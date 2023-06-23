@@ -3,6 +3,9 @@
 
 uint8_t buf[1024] = {0};
 
+static uint8_t color_field = COLOR_BLACK;
+static uint8_t color_draw = COLOR_WHITE;
+
 void oledInit(void){
 	i2cSimpleInit();
 	oledRegisterWriteTwo(0xAE);
@@ -21,7 +24,23 @@ void oledInit(void){
 	oledRegisterWriteTwo(0xA4);
 	oledRegisterWriteTwo(0xA6);
 	oledRegisterWriteTwo(0xAF);
+
+	oledInvertColor(false);
+
 	oledClear();
+}
+
+void oledInvertColor(bool state_invert){
+	if (state_invert == true){
+		color_field = COLOR_WHITE;
+		color_draw = COLOR_BLACK;
+		oledRegisterWriteTwo(0xA7);
+	}
+	else{
+		color_field = COLOR_BLACK;
+		color_draw = COLOR_WHITE;
+		oledRegisterWriteTwo(0xA6);
+	}
 }
 
 void oledUpdatePic(void){
@@ -40,7 +59,10 @@ void oledUpdatePic(void){
 void oledDrawPixel(uint8_t x, uint8_t y){
 	if (x < 128 && y < 64){
 		uint16_t i = (x * 8) + (y / 8);
-		buf[i] |= 1 << (y % 8);
+		if (color_field != color_draw) buf[i] |= 1 << (y % 8);
+		else {
+			buf[i] &= ~(1 << (y % 8));
+		}
 	}
 }
 
@@ -63,7 +85,6 @@ void oledDrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2) {
         if (y1 < y2) {
             for (int16_t y = y1; y <= y2; y++) {
             	oledDrawPixel((uint8_t)((y - y1) * dx / dy + x1), y);
-            	//dbgPrintf("x = %d\t y = %d\r\n", (y - y1) * dx / dy + x1, y);
             }
         } else {
             for (int16_t y = y1; y >= y2; y--) {
@@ -85,6 +106,11 @@ void oled_change_fill_param(uint8_t *x1, uint8_t *x2){
 		*x2 = temp - 1;
 	}
 }
+
+uint8_t oledGetColorDraw(void){
+	return color_draw;
+}
+
 void oledDrawRect(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, bool fill){
 
 	oledDrawLine(x1, y1, x1, y2);
@@ -103,38 +129,57 @@ void oledDrawRect(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, bool fill){
 	}
 }
 
-void oledDrawCircle(uint8_t X1, uint8_t Y1, uint8_t R){
-	uint8_t x, y;
+void oledDrawCircle(uint8_t x, uint8_t y, uint8_t R){
+	uint8_t x_temp, y_temp;
 	int16_t delta, error;
-	while (R != 0){
-		x = 0;
-		y = R;
-		delta = 1 - 2 * R;
-		error = 0;
-		while (y >= x){
-			oledDrawPixel(X1 + x, Y1 + y);
-			oledDrawPixel(X1 + x, Y1 - y);
-			oledDrawPixel(X1 - x, Y1 + y);
-			oledDrawPixel(X1 - x, Y1 - y);
-			oledDrawPixel(X1 + y, Y1 + x);
-			oledDrawPixel(X1 + y, Y1 - x);
-			oledDrawPixel(X1 - y, Y1 + x);
-			oledDrawPixel(X1 - y, Y1 - x);
-			error = 2 * (delta + y) - 1;
-			if ((delta < 0) && (error <= 0)){
-				delta += 2 * ++x + 1;
-				continue;
-			}
-			if ((delta > 0) && (error > 0)){
-				delta -= 2 * --y + 1;
-				continue;
-			}
-			delta += 2 * (++x - --y);
+	x_temp = 0;
+	y_temp = R;
+	delta = 1 - 2 * R;
+	error = 0;
+	while (y_temp >= x_temp){
+		oledDrawPixel(x + x_temp, y + y_temp);
+		oledDrawPixel(x + x_temp, y - y_temp);
+		oledDrawPixel(x - x_temp, y + y_temp);
+		oledDrawPixel(x - x_temp, y - y_temp);
+		oledDrawPixel(x + y_temp, y + x_temp);
+		oledDrawPixel(x + y_temp, y - x_temp);
+		oledDrawPixel(x - y_temp, y + x_temp);
+		oledDrawPixel(x - y_temp, y - x_temp);
+		error = 2 * (delta + y_temp) - 1;
+		if ((delta < 0) && (error <= 0)){
+			delta += 2 * ++x_temp + 1;
+			continue;
 		}
-		R--;
+		if ((delta > 0) && (error > 0)){
+			delta -= 2 * --y_temp + 1;
+			continue;
+		}
+		delta += 2 * (++x_temp - --y_temp);
 	}
-
 }
+
+void oledChangeColorDraw(uint8_t color){
+	color_draw = color;
+}
+
+uint8_t oledGetPixel(uint8_t x, uint8_t y){
+	uint8_t temp;
+	if (x < 128 && y < 64){
+		uint16_t i = (x * 8) + (y / 8);
+		temp = buf[i] & 1 << (y % 8);
+		if (color_field == COLOR_BLACK){
+			if (temp != 0) return COLOR_WHITE;
+			else return COLOR_BLACK;
+		}
+		else{
+			if (temp != 0) return COLOR_BLACK;
+			else return COLOR_WHITE;
+		}
+	}
+	else return color_field;
+}
+
+
 
 
 void oledClear(void){

@@ -12,7 +12,9 @@ void oled_display_test(void){
     debugStreamInit();
     dbgPrintf("Start\r\n");
     oledInit();
-    oledDrawCircle(50, 20, 20);
+    oledDrawRect(0, 0, 50, 50, true);
+    oledChangeColorDraw(COLOR_BLACK);
+    oledDrawCircle(25, 25, 10);
     oledUpdatePic();
 
 
