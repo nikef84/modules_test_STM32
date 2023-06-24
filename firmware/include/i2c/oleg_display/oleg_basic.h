@@ -1,5 +1,5 @@
-#ifndef INCLUDE_I2C_OLED_DISPLAY_H_
-#define INCLUDE_I2C_OLED_DISPLAY_H_
+#ifndef INCLUDE_I2C_OLEG_DISPLAY_OLEG_BASIC_H_
+#define INCLUDE_I2C_OLEG_DISPLAY_OLEG_BASIC_H_
 
 #include "common.h"
 #include "i2c_lld.h"
@@ -24,5 +24,6 @@ void oledInvertColor(bool state_invert);
 uint8_t oledGetColorDraw(void);
 uint8_t oledGetPixel(uint8_t x, uint8_t y);
 void oledChangeColorDraw(uint8_t color);
+void oledFillSpace(uint8_t x, uint8_t y);
 
-#endif /* INCLUDE_I2C_OLED_DISPLAY_H_ */
+#endif /* INCLUDE_I2C_OLEG_DISPLAY_OLEG_BASIC_H_ */

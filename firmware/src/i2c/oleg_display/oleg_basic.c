@@ -1,4 +1,4 @@
-#include "oled_display.h"
+#include "oleg_basic.h"
 #include "terminal_write.h"
 
 uint8_t buf[1024] = {0};
@@ -155,6 +155,69 @@ void oledDrawCircle(uint8_t x, uint8_t y, uint8_t R){
 			continue;
 		}
 		delta += 2 * (++x_temp - --y_temp);
+	}
+}
+
+
+void oledFillSpace(uint8_t x, uint8_t y){
+	if (oledGetPixel(x, y) != color_draw){
+		int8_t vert_dir = -1;
+		int8_t vert_step = 0;
+		uint8_t x_temp = x;
+		int8_t hor_dir, hor_step;
+		uint8_t x1, x2;
+		int8_t temp_dir;
+		while (vert_dir != 0){
+			if (oledGetPixel(x, y + vert_step) != color_draw){
+				hor_dir = 1;
+				hor_step = 0;
+
+				while (hor_dir != 0){
+					hor_step += hor_dir;
+					if (oledGetPixel(x + hor_step, y + vert_step) == color_draw){
+						if (hor_dir == 1) {
+							hor_dir = -1;
+							x2 = x + hor_step;
+						}
+						else {
+							hor_dir = 0;
+							x1 = x + hor_step;
+						}
+						hor_step = 0;
+					}
+
+
+				}
+				oledDrawLine(x1, y + vert_step, x2, y + vert_step);
+				vert_step += vert_dir;
+			}
+			else{
+				if (abs(x-x1) < abs(x2 - x)) {
+					temp_dir = 1;
+					x = x1 + temp_dir;
+				}
+				else {
+					temp_dir = -1;
+					x = x2 + temp_dir;
+				}
+				bool flag = false;
+				while (x != x2 && x != x1){
+					if (oledGetPixel(x, y + vert_step) == color_draw) flag = true;
+					else if(flag == true) break;
+					x += temp_dir;
+				}
+				if (x == x2 || x == x1){
+					if (vert_dir == -1){
+						vert_dir = 1;
+						vert_step = 1;
+						x = x_temp;
+					}
+					else {
+						vert_dir = 0;
+					}
+				}
+			}
+		}
 	}
 }
 
