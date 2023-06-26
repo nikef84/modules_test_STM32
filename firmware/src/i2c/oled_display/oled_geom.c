@@ -92,8 +92,21 @@ void oledDrawRect(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, bool fill){
 	}
 }
 
-void oledDrawCircle(uint8_t x, uint8_t y, uint8_t R){
-	uint8_t x_circle, y_circle;
+
+/*
+ * @brief	Draws a circle at center coordinates and the radios.
+ *
+ * @note	May be hollow or filled.
+ *
+ * @param_in	x		Horizontal coordinate of the center.
+ * 				y 		Vertical coordinate of the center.
+ * 				R		Radios.
+ * 				fill	Fill or hollow.
+ *
+ * @note	(x, y) = (0, 0) - Upper left coner.
+ */
+void oledDrawCircle(uint8_t x, uint8_t y, uint8_t R, bool fill){
+	uint8_t x_circle, y_circle; // Coord of circle.
 	int16_t delta, error;
 	x_circle = 0;
 	y_circle = R;
@@ -119,25 +132,41 @@ void oledDrawCircle(uint8_t x, uint8_t y, uint8_t R){
 		}
 		delta += 2 * (++x_circle - --y_circle);
 	}
+	if (fill == true){
+		oledFillSpace(x, y);
+	}
 }
 
-
+/*
+ * @brief	Fill the space in which (x,y) is located.
+ *
+ * @note	Can not to work correctly!!!
+ *
+ * @param_in	x		Horizontal coordinate inside the space we want to fill.
+ * 				y 		Vertical coordinate inside the space we want to fill.
+ */
 void oledFillSpace(uint8_t x, uint8_t y){
 	if (oledGetPixel(x, y) != oledGetColorDraw()){
+		// Goes up and down from a given point.
 		int8_t vert_dir = -1;
 		int8_t vert_step = 0;
+		// To save first x coor.
 		uint8_t x_temp = x;
+		// Goes left and right from a point.
 		int8_t hor_dir, hor_step;
+		// Coords of the leftmost and rightmost points of space at Y.
 		uint8_t x1, x2;
+		// Horizontal direction if we need to move x coord.
 		int8_t temp_dir;
 		while (vert_dir != 0){
 			if (oledGetPixel(x, y + vert_step) != oledGetColorDraw()){
 				hor_dir = 1;
 				hor_step = 0;
 
-				while (hor_dir != 0){
+				while (hor_dir != 0){ // Find coords the leftmost and rightmost points of space at Y.
 					hor_step += hor_dir;
 					if (oledGetPixel(x + hor_step, y + vert_step) == oledGetColorDraw()){
+						// Change horizontal direction of filling.
 						if (hor_dir == 1) {
 							hor_dir = -1;
 							x2 = x + hor_step;
@@ -151,10 +180,10 @@ void oledFillSpace(uint8_t x, uint8_t y){
 
 
 				}
-				oledDrawLineCoord(x1, y + vert_step, x2, y + vert_step);
+				oledDrawLineCoord(x1, y + vert_step, x2, y + vert_step); // Drwa line.
 				vert_step += vert_dir;
 			}
-			else{
+			else{ // We need to move x to find more space which we need to fill.
 				if (abs(x-x1) < abs(x2 - x)) {
 					temp_dir = 1;
 					x = x1 + temp_dir;
@@ -164,18 +193,20 @@ void oledFillSpace(uint8_t x, uint8_t y){
 					x = x2 + temp_dir;
 				}
 				bool flag = false;
+				// Try to find more space to fill.
 				while (x != x2 && x != x1){
 					if (oledGetPixel(x, y + vert_step) == oledGetColorDraw()) flag = true;
 					else if(flag == true) break;
 					x += temp_dir;
 				}
+				// Change vertical direction of filling.
 				if (x == x2 || x == x1){
 					if (vert_dir == -1){
 						vert_dir = 1;
 						vert_step = 1;
 						x = x_temp;
 					}
-					else {
+					else { // Stops filling.
 						vert_dir = 0;
 					}
 				}
