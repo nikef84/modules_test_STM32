@@ -2,6 +2,13 @@
 #define INCLUDE_I2C_OLED_DISPLAY_OLED_GEOM_H_
 
 #include "oled_basic.h"
+#include "math.h"
+
+
+typedef struct{
+    int16_t x;
+    int16_t y;
+} coordParams;
 
 
 /*
@@ -59,5 +66,57 @@ void oledDrawCircle(uint8_t X1, uint8_t Y1, uint8_t R, bool fill);
  * 				y 		Vertical coordinate inside the space we want to fill.
  */
 void oledFillSpace(uint8_t x, uint8_t y);
+
+
+/*
+ * @brief	Draws a triangle at 3 coordinates.
+ *
+ * @note	May be hollow or filled.
+ *
+ * @param_in	x1		Horizontal coordinate of the first point.
+ * 				y1 		Vertical coordinate of the first point.
+ * 				x2		Horizontal coordinate of the second point.
+ * 				y2 		Vertical coordinate of the second point.
+ * 				x3		Horizontal coordinate of the third point.
+ * 				y3 		Vertical coordinate of the third point.
+ * 				fill	Fill or hollow.
+ *
+ * @note	(x, y) = (0, 0) - Upper left coner.
+ */
+void oledDrawTriangle(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t x3, uint8_t y3, bool fill);
+
+
+/*
+ * @brief	Counts the coordinates of the second point to be found using the angle and distance.
+ *
+ * @pram_in		x		Horizontal coordinate of the first point.
+ * 				y		Vertical coordinate of the first point.
+ * 				angle	The angle of inclination of a straight line relative to the X axis.
+ * 				lenght	The length of the line.
+ *
+ * @param_out	drawLineAngleParam	Contains coordinates of the second point.
+ */
+coordParams* oledCountCoordLineAngle(uint8_t x, uint8_t y, uint16_t angle, uint8_t lenght);
+
+
+/*
+ * @brief	Draws a line at coordinates, angle and lenght.
+ *
+ * @pram_in		x		Horizontal coordinate of the first point.
+ * 				y		Vertical coordinate of the first point.
+ * 				angle	The angle of inclination of a straight line relative to the X axis.
+ * 				lenght	The length of the line.
+ *
+ * @param_out	drawLineAngleParam	Contains coordinates of the second point.
+ */
+coordParams* oledDrawLineAngle(uint8_t x, uint8_t y, uint16_t angle, uint8_t lenght);
+
+
+/*
+ * @brief	Gets the coordinates of the second point to be found using the angle and distance.
+ *
+ * @param_out	drawLineAngleParam	Contains coordinates of the second point.
+ */
+coordParams* oledGetLineAngleParam(void);
 
 #endif /* INCLUDE_I2C_OLED_DISPLAY_OLED_GEOM_H_ */

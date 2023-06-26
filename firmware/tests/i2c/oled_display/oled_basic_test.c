@@ -11,15 +11,11 @@ void oled_display_test(void){
     debugStreamInit();
     dbgPrintf("Start oled\r\n");
     oledInit();
-    dbgPrintf("OLED_BYTES_PER_COLOM = %d\r\n", OLED_BYTES_PER_COLOM);
-    dbgPrintf("OLED_PIC_BUF_SIZE = %d\r\n", OLED_PIC_BUF_SIZE);
-
-    dbgPrintf("OLED_BUF_SEPARATOR = %d\r\n", OLED_BUF_SEPARATOR);
-
-    dbgPrintf("OLED_SEPAR_BUF_SIZE = %d\r\n", OLED_SEPAR_BUF_SIZE);
-
-    oledDrawLineCoord(10, 10, 100, 10);
+    oledDrawCircle(25, 25, 20, false);
+    oledDrawLineCoord(25, 20, 25, 0);
+    oledFillSpace(25, 25);
     oledUpdatePic();
+
 
     while (true) {
 		chThdSleepMilliseconds(50);

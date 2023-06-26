@@ -1,5 +1,16 @@
 #include "oled_geom.h"
 
+/* @brief 	The coordinates of the second point to be found using the angle and distance.
+ *
+ * @note	oledCountCoordLineAngle();
+ */
+static coordParams drawLineAngleParam = {
+    .x = 0,
+	.y = 0
+};
+
+
+
 /*
  * @brief	Draws a line at coordinates.
  *
@@ -213,4 +224,111 @@ void oledFillSpace(uint8_t x, uint8_t y){
 			}
 		}
 	}
+}
+
+
+/*
+ * @brief	Draws a triangle at 3 coordinates.
+ *
+ * @note	May be hollow or filled.
+ *
+ * @param_in	x1		Horizontal coordinate of the first point.
+ * 				y1 		Vertical coordinate of the first point.
+ * 				x2		Horizontal coordinate of the second point.
+ * 				y2 		Vertical coordinate of the second point.
+ * 				x3		Horizontal coordinate of the third point.
+ * 				y3 		Vertical coordinate of the third point.
+ * 				fill	Fill or hollow.
+ *
+ * @note	(x, y) = (0, 0) - Upper left coner.
+ */
+void oledDrawTriangle(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t x3, uint8_t y3, bool fill){
+	oledDrawLineCoord(x1, y1, x2, y2);
+	oledDrawLineCoord(x2, y2, x3, y3);
+	oledDrawLineCoord(x3, y3, x1, y1);
+
+	if (fill == true){
+		oledFillSpace((x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);
+	}
+
+}
+
+
+/*
+ * @breif	Converts degrees to radians.
+ *
+ * @param_in	angle	Angle in degrees.
+ *
+ * @not_api
+ */
+float grad_to_rad(uint16_t angle){
+	return (angle * M_PI) / 180;
+}
+
+
+/*
+ * @brief	Counts the coordinates of the second point to be found using the angle and distance.
+ *
+ * @pram_in		x		Horizontal coordinate of the first point.
+ * 				y		Vertical coordinate of the first point.
+ * 				angle	The angle of inclination of a straight line relative to the X axis.
+ * 				lenght	The length of the line.
+ *
+ * @param_out	drawLineAngleParam	Contains coordinates of the second point.
+ */
+coordParams* oledCountCoordLineAngle(uint8_t x, uint8_t y, uint16_t angle, uint8_t lenght){
+	drawLineAngleParam.x = x + lenght * cos(grad_to_rad(angle));
+	drawLineAngleParam.y = y - lenght * sin(grad_to_rad(angle));
+	return &drawLineAngleParam;
+}
+
+/*
+ * @brief	Draws a line at coordinates, angle and lenght.
+ *
+ * @pram_in		x		Horizontal coordinate of the first point.
+ * 				y		Vertical coordinate of the first point.
+ * 				angle	The angle of inclination of a straight line relative to the X axis.
+ * 				lenght	The length of the line.
+ *
+ * @param_out	drawLineAngleParam	Contains coordinates of the second point.
+ */
+coordParams* oledDrawLineAngle(uint8_t x, uint8_t y, uint16_t angle, uint8_t lenght){
+	oledCountCoordLineAngle(x, y, angle, lenght);
+	if (drawLineAngleParam.x > 0 && drawLineAngleParam.x < 255 &&
+		drawLineAngleParam.y > 0 && drawLineAngleParam.y < 255){
+		oledDrawLineCoord(x, y, drawLineAngleParam.x, drawLineAngleParam.y);
+	}
+	return &drawLineAngleParam;
+}
+
+/*
+ * @brief	Gets the coordinates of the second point to be found using the angle and distance.
+ *
+ * @param_out	drawLineAngleParam	Contains coordinates of the second point.
+ */
+coordParams* oledGetLineAngleParam(void){
+	return &drawLineAngleParam;
+}
+
+void oledFillV2(uint8_t x, uint8_t y){
+	if (oledGetPixel(x, y) != oledGetColorDraw()){
+		// Goes up and down from a given point.
+		int8_t vert_dir = -1;
+		int8_t vert_step = 0;
+		// To save first x coor.
+		uint8_t x_temp = x;
+		// Goes left and right from a point.
+		int8_t hor_dir, hor_step;
+		// Coords of the leftmost and rightmost points of space at Y.
+		uint8_t x1, x2;
+		// Horizontal direction if we need to move x coord.
+		int8_t temp_dir;
+		while (vert_dir != 0){
+			if (oledGetPixel(x, y + vert_step) != oledGetColorDraw()){
+				hor_dir = 1;
+				hor_step = 0;
+			}
+		}
+	}
+
 }
