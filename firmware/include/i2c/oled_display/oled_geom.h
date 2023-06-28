@@ -119,4 +119,6 @@ coordParams* oledDrawLineAngle(uint8_t x, uint8_t y, uint16_t angle, uint8_t len
  */
 coordParams* oledGetLineAngleParam(void);
 
+void oledFillV2(uint8_t x, uint8_t y);
+
 #endif /* INCLUDE_I2C_OLED_DISPLAY_OLED_GEOM_H_ */

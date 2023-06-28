@@ -1,4 +1,5 @@
 #include "oled_geom.h"
+#include "terminal_write.h"
 
 /* @brief 	The coordinates of the second point to be found using the angle and distance.
  *
@@ -310,25 +311,40 @@ coordParams* oledGetLineAngleParam(void){
 	return &drawLineAngleParam;
 }
 
+void fill_pixel(uint8_t *Mx, uint8_t * My, uint16_t *N, uint16_t *N_cur, int8_t dx, int8_t dy){
+	if (oledGetPixel(Mx[*N_cur] + dx, My[*N_cur] + dy) != oledGetColorDraw()){
+		Mx[*N] = Mx[*N_cur] + dx;
+		Mx[*N] = My[*N_cur] + dy;
+		oledDrawPixel(Mx[*N], Mx[*N]);
+		*N += 1;
+	}
+}
+
+
 void oledFillV2(uint8_t x, uint8_t y){
 	if (oledGetPixel(x, y) != oledGetColorDraw()){
-		// Goes up and down from a given point.
-		int8_t vert_dir = -1;
-		int8_t vert_step = 0;
-		// To save first x coor.
-		uint8_t x_temp = x;
-		// Goes left and right from a point.
-		int8_t hor_dir, hor_step;
-		// Coords of the leftmost and rightmost points of space at Y.
-		uint8_t x1, x2;
-		// Horizontal direction if we need to move x coord.
-		int8_t temp_dir;
-		while (vert_dir != 0){
-			if (oledGetPixel(x, y + vert_step) != oledGetColorDraw()){
-				hor_dir = 1;
-				hor_step = 0;
-			}
+		dbgPrintf("ff\r\n");
+		chThdSleepMilliseconds(500);
+		uint16_t N = 0;
+		uint16_t N_cur = 0;
+		uint8_t Mx[1024] = {0};
+		uint8_t My[1024] = {0};
+
+		Mx[N] = x;
+		Mx[N] = y;
+		N += 1;
+		dbgPrintf("ff\r\n");
+		chThdSleepMilliseconds(500);
+
+		while (N != N_cur){
+			fill_pixel(Mx, My, &N, &N_cur, 0, -1);
+			fill_pixel(Mx, My, &N, &N_cur, 1, 0);
+			fill_pixel(Mx, My, &N, &N_cur, 0, 1);
+			fill_pixel(Mx, My, &N, &N_cur, -1, 0);
+			N_cur += 1;
 		}
 	}
+
+
 
 }

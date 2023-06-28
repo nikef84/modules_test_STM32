@@ -1,4 +1,5 @@
 #include "oled_basic.h"
+#include "terminal_write.h"
 
 // The buffer of the image that will be displayed on the screen.
 uint8_t buf[OLED_PIC_BUF_SIZE] = {0};
