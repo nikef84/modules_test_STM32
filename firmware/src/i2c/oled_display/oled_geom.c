@@ -149,84 +149,6 @@ void oledDrawCircle(uint8_t x, uint8_t y, uint8_t R, bool fill){
 	}
 }
 
-/*
- * @brief	Fill the space in which (x,y) is located.
- *
- * @note	Can not to work correctly!!!
- *
- * @param_in	x		Horizontal coordinate inside the space we want to fill.
- * 				y 		Vertical coordinate inside the space we want to fill.
- */
-void oledFillSpace(uint8_t x, uint8_t y){
-	if (oledGetPixel(x, y) != oledGetColorDraw()){
-		// Goes up and down from a given point.
-		int8_t vert_dir = -1;
-		int8_t vert_step = 0;
-		// To save first x coor.
-		uint8_t x_temp = x;
-		// Goes left and right from a point.
-		int8_t hor_dir, hor_step;
-		// Coords of the leftmost and rightmost points of space at Y.
-		uint8_t x1, x2;
-		// Horizontal direction if we need to move x coord.
-		int8_t temp_dir;
-		while (vert_dir != 0){
-			if (oledGetPixel(x, y + vert_step) != oledGetColorDraw()){
-				hor_dir = 1;
-				hor_step = 0;
-
-				while (hor_dir != 0){ // Find coords the leftmost and rightmost points of space at Y.
-					hor_step += hor_dir;
-					if (oledGetPixel(x + hor_step, y + vert_step) == oledGetColorDraw()){
-						// Change horizontal direction of filling.
-						if (hor_dir == 1) {
-							hor_dir = -1;
-							x2 = x + hor_step;
-						}
-						else {
-							hor_dir = 0;
-							x1 = x + hor_step;
-						}
-						hor_step = 0;
-					}
-
-
-				}
-				oledDrawLineCoord(x1, y + vert_step, x2, y + vert_step); // Drwa line.
-				vert_step += vert_dir;
-			}
-			else{ // We need to move x to find more space which we need to fill.
-				if (abs(x-x1) < abs(x2 - x)) {
-					temp_dir = 1;
-					x = x1 + temp_dir;
-				}
-				else {
-					temp_dir = -1;
-					x = x2 + temp_dir;
-				}
-				bool flag = false;
-				// Try to find more space to fill.
-				while (x != x2 && x != x1){
-					if (oledGetPixel(x, y + vert_step) == oledGetColorDraw()) flag = true;
-					else if(flag == true) break;
-					x += temp_dir;
-				}
-				// Change vertical direction of filling.
-				if (x == x2 || x == x1){
-					if (vert_dir == -1){
-						vert_dir = 1;
-						vert_step = 1;
-						x = x_temp;
-					}
-					else { // Stops filling.
-						vert_dir = 0;
-					}
-				}
-			}
-		}
-	}
-}
-
 
 /*
  * @brief	Draws a triangle at 3 coordinates.
@@ -311,40 +233,68 @@ coordParams* oledGetLineAngleParam(void){
 	return &drawLineAngleParam;
 }
 
-void fill_pixel(uint8_t *Mx, uint8_t * My, uint16_t *N, uint16_t *N_cur, int8_t dx, int8_t dy){
-	if (oledGetPixel(Mx[*N_cur] + dx, My[*N_cur] + dy) != oledGetColorDraw()){
-		Mx[*N] = Mx[*N_cur] + dx;
-		Mx[*N] = My[*N_cur] + dy;
-		oledDrawPixel(Mx[*N], Mx[*N]);
-		*N += 1;
+
+/*
+ * @brief	Checks and paints a pixel in an area.
+ *
+ * param_in		space_x			An array that contains the horizontal coordinates of
+ * 								all coords in the space to be filled.
+ * 				space_y			An array that contains the vertical coordinates of
+ * 								all coords in the space to be filled.
+ * 				space_size		The maximum number of pixels that the region contains.
+ * 				space_index		The index of the investigated pixel.
+ * 				dx				Horizontal change of coordinate relative to the pixel under study.
+ * 				dy				Vertical change of coordinate relative to the pixel under study.
+ *
+ * @notapi
+ */
+void fill_pixel(uint8_t *space_x, uint8_t *space_y, uint16_t *space_size, uint16_t *space_index, int8_t dx, int8_t dy){
+	if (space_x[*space_index] + dx <= (OLED_LENGHT - 1) && space_x[*space_index] + dx >= 0 &&
+		space_y[*space_index] + dy <= (OLED_HEIGHT - 1) && space_y[*space_index] + dy >= 0){
+		if (oledGetPixel(space_x[*space_index] + dx, space_y[*space_index] + dy) != oledGetColorDraw()){
+			space_x[*space_size] = space_x[*space_index] + dx;
+			space_y[*space_size] = space_y[*space_index] + dy;
+			oledDrawPixel(space_x[*space_size], space_y[*space_size]);
+			*space_size = *space_size + 1;
+		}
 	}
 }
 
 
-void oledFillV2(uint8_t x, uint8_t y){
+// Arrays that contain the coordinates of all coords in the space to be filled.
+static uint8_t space_x[OLED_NUM_OF_PIXELS] = {0};
+static uint8_t space_y[OLED_NUM_OF_PIXELS] = {0};
+
+
+/*
+ * @brief	Fill the space in which (x,y) is located.
+ *
+ * @note	Can take some time.
+ *
+ * @param_in	x		Horizontal coordinate inside the space we want to fill.
+ * 				y 		Vertical coordinate inside the space we want to fill.
+ */
+void oledFillSpace(uint8_t x, uint8_t y){
 	if (oledGetPixel(x, y) != oledGetColorDraw()){
-		dbgPrintf("ff\r\n");
-		chThdSleepMilliseconds(500);
-		uint16_t N = 0;
-		uint16_t N_cur = 0;
-		uint8_t Mx[1024] = {0};
-		uint8_t My[1024] = {0};
+		uint16_t space_size = 0; // The maximum number of pixels that the region contains.
+		uint16_t space_index = 0; // The index of the investigated pixel.
+		// Clean the buf.
+		for (uint16_t i = 0; i != OLED_NUM_OF_PIXELS; i++){
+			space_x[i] = 0;
+			space_y[i] = 0;
+		}
+		// Fills the first point of the space.
+		space_x[space_size] = x;
+		space_y[space_size] = y;
+		oledDrawPixel(space_x[space_size], space_y[space_size]);
+		space_size = space_size + 1;
 
-		Mx[N] = x;
-		Mx[N] = y;
-		N += 1;
-		dbgPrintf("ff\r\n");
-		chThdSleepMilliseconds(500);
-
-		while (N != N_cur){
-			fill_pixel(Mx, My, &N, &N_cur, 0, -1);
-			fill_pixel(Mx, My, &N, &N_cur, 1, 0);
-			fill_pixel(Mx, My, &N, &N_cur, 0, 1);
-			fill_pixel(Mx, My, &N, &N_cur, -1, 0);
-			N_cur += 1;
+		while (space_size != space_index){ // Untill we find all pixel, that we need to fill.
+			fill_pixel(space_x, space_y, &space_size, &space_index, 0, -1); // Step to the top.
+			fill_pixel(space_x, space_y, &space_size, &space_index, 1, 0); // Step to the right
+			fill_pixel(space_x, space_y, &space_size, &space_index, 0, 1); // Step to the bottom.
+			fill_pixel(space_x, space_y, &space_size, &space_index, -1, 0); // Step to the left.
+			space_index = space_index + 1;
 		}
 	}
-
-
-
 }

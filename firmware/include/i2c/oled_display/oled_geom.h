@@ -58,17 +58,6 @@ void oledDrawCircle(uint8_t X1, uint8_t Y1, uint8_t R, bool fill);
 
 
 /*
- * @brief	Fill the space in which (x,y) is located.
- *
- * @note	Can not to work correctly!!!
- *
- * @param_in	x		Horizontal coordinate inside the space we want to fill.
- * 				y 		Vertical coordinate inside the space we want to fill.
- */
-void oledFillSpace(uint8_t x, uint8_t y);
-
-
-/*
  * @brief	Draws a triangle at 3 coordinates.
  *
  * @note	May be hollow or filled.
@@ -119,6 +108,16 @@ coordParams* oledDrawLineAngle(uint8_t x, uint8_t y, uint16_t angle, uint8_t len
  */
 coordParams* oledGetLineAngleParam(void);
 
-void oledFillV2(uint8_t x, uint8_t y);
+
+/*
+ * @brief	Fill the space in which (x,y) is located.
+ *
+ * @note	Can take some time.
+ *
+ * @param_in	x		Horizontal coordinate inside the space we want to fill.
+ * 				y 		Vertical coordinate inside the space we want to fill.
+ */
+void oledFillSpace(uint8_t x, uint8_t y);
+
 
 #endif /* INCLUDE_I2C_OLED_DISPLAY_OLED_GEOM_H_ */

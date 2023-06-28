@@ -16,7 +16,7 @@ static uint8_t color_draw = COLOR_WHITE; // The color that is drawn on the scree
 void oledRegisterWriteReg(uint8_t reg_address){
 	uint8_t txbuf[2] = {OLED_REG_WRITE_SETT, reg_address};
 	i2cSimpleWrite(OLED_ADDR, txbuf, 2);
-	chThdSleepMilliseconds(1);
+//	chThdSleepMilliseconds(1);
 }
 
 /*
@@ -31,7 +31,7 @@ void oledRegisterWriteReg(uint8_t reg_address){
 void oledRegisterWriteFour(uint8_t reg_address, uint8_t data){
 	uint8_t txbuf[4] = {OLED_REG_WRITE_SETT, reg_address, OLED_REG_WRITE_SETT, data};
 	i2cSimpleWrite(OLED_ADDR, txbuf, 4);
-	chThdSleepMilliseconds(1);
+//	chThdSleepMilliseconds(1);
 }
 
 /*
@@ -50,7 +50,7 @@ void oledRegisterWriteSix(uint8_t reg_address, uint8_t data, uint8_t data1){
 	uint8_t txbuf[6] = {OLED_REG_WRITE_SETT, reg_address, OLED_REG_WRITE_SETT, data,
 						OLED_REG_WRITE_SETT, data1};
 	i2cSimpleWrite(OLED_ADDR, txbuf, 6);
-	chThdSleepMilliseconds(1);
+	//chThdSleepMilliseconds(1);
 }
 
 /*

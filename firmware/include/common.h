@@ -15,7 +15,6 @@
 #define LED_MATRIX		         	3
 #define OLED_DISPLAY				4
 
-
 // Selection of program to run
 #define PROGRAM_ROUTINE OLED_DISPLAY
 
