@@ -6,11 +6,11 @@ void fill_diff_space(void);
 
 
 
-void oled_display_test(void){
+void oled_geom_test(void){
     halInit();
     chSysInit();
     debugStreamInit();
-    dbgPrintf("Start oled\r\n");
+    dbgPrintf("Start oled geom\r\n");
     oledInit();
     oledDrawCircle(10, 10, 30, false);
     oledFillSpace(10, 10);
