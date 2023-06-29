@@ -213,11 +213,28 @@ const uint8_t font_12x16[] = {
 
 /*
  * @brief	Gets the colom of the symbol.
+ *
+ * @note	Font6x8.
+ *
+ * @param_in	symb	The desired character.
+ * 				colom	The number of the colom of the symbol that stores the pixels that need to be filled.
+ *
+ * @param_out	The colom of pixels.
  */
-uint8_t font6x8GetSymbol(char symb, uint8_t colom){
+uint8_t font6x8GetElement(char symb, uint8_t colom){
 	return font_6x8[(((uint8_t)symb) - FONT_DIFF) * FONT_6x8_COL + colom];
 }
 
+/*
+ * @brief	Gets half of the colom of the symbol.
+ *
+ * @note	Font12x16.
+ *
+ * @param_in	symb	The desired character.
+ * 				colom	The number of the colom of the symbol that stores the pixels that need to be filled.
+ *
+ * @param_out	The colom of pixels.
+ */
 uint8_t font12x16GetElement(char symb, uint8_t colom){
 	return font_12x16[(((uint8_t)symb) - FONT_DIFF) * 2 * FONT_12x16_COL + colom];
 }

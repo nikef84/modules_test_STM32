@@ -10,8 +10,7 @@ void oled_text_test(void){
     debugStreamInit();
     dbgPrintf("Start oled text\r\n");
     oledInit();
-    char c[] = "gleb";
-    oledPrintText12x16(c, 10, 10);
+    oledPrintFloat6x8(-5.29, 5, 10, 10);
     oledUpdatePic();
 
 
