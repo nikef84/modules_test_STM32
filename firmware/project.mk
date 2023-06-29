@@ -7,7 +7,7 @@ PROJECT_CSRC 	= 	src/main.c \
 					src/i2c/oled_display/oled_basic.c \
 					src/i2c/oled_display/oled_text.c \
 					src/i2c/oled_display/oled_geom.c \
-					
+					src/i2c/oled_display/oled_fonts.c \
 					
 					
 
