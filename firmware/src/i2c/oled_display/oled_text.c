@@ -1,6 +1,17 @@
 #include "oled_text.h"
 #include "terminal_write.h"
 
+
+static uint8_t font = FONT_6x9;
+static uint8_t font_x = FONT_6x9_X;
+static uint8_t font_y = FONT_6x9_Y;
+
+bool oled_print_char(char symb, uint8_t x, uint8_t y){
+
+}
+
+
+
 void oledPrintText6x8(char *text, uint8_t x, uint8_t y){
 	bool flagEndLine = false;
 	for (uint8_t symb = 0; symb < strlen(text) && flagEndLine == false; symb++){

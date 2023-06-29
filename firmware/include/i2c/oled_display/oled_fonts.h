@@ -3,14 +3,26 @@
 
 #include "common.h"
 
+
+#define FONT_6x8		0
+#define FONT_12x16		1
+
+
 // To remove unnecessary characters up to "space" symbol in the asci table.
 #define FONT_DIFF		32
 
 // Pixel size of the font_6x8.
+#define FONT_6x8_X	6
+#define FONT_6x8_Y	8
+
 #define FONT_6x8_COL	6
 #define FONT_6x8_STR	8
 
 // Pixel size of the font_6x8.
+#define FONT_12x16_X	12
+#define FONT_12x16_Y	16
+
+
 #define FONT_12x16_COL	12
 #define FONT_12x16_STR	16
 
