@@ -2,12 +2,51 @@
 #include "terminal_write.h"
 
 
-static uint8_t font = FONT_6x9;
-static uint8_t font_x = FONT_6x9_X;
-static uint8_t font_y = FONT_6x9_Y;
+static uint8_t font = FONT_6x8;
+static uint8_t font_x = FONT_6x8_X;
+static uint8_t font_y = FONT_6x8_Y;
 
 bool oled_print_char(char symb, uint8_t x, uint8_t y){
+	uint16_t colom[font_y];
+	bool flagEndLine = false;
 
+	if ((uint8_t) symb < 32 || (uint8_t) symb > 126) symb = 127;
+	if (font == FONT_6x8){
+		for (uint8_t i = 0; i < font_x; i++){
+			colom[i] = font6x8GetElement(symb, i);
+		}
+
+	}
+	else if (font == FONT_12x16){
+		for (uint8_t i = 0; i < font_x; i++){
+			colom[i] = font6x8GetElement(symb, i) | (uint16_t) (font6x8GetElement(symb, 2 * FONT_12x16_X + i) << 8);
+			dbgPrintf("%d\r\n", colom[i]);
+		}
+	}
+
+	for (uint8_t col = 0; col < font_x; col++){
+		if ((x + col) == OLED_LENGHT && flagEndLine == false) {
+			flagEndLine = true;
+			break;
+		}
+		for (uint8_t str = 0; str < font_y; str++){
+			if (y + str == OLED_HEIGHT) break;
+			if (((colom[col] >> str) & 0x01) == 1) {
+				oledDrawPixel(x + col, y + str);
+			}
+		}
+	}
+	return flagEndLine;
+}
+
+uint8_t oledPrintText(char *text, uint8_t x, uint8_t y){
+	bool flagEndLine = false;
+
+	for (uint8_t symb = 0; symb < strlen(text) && flagEndLine == false; symb++){
+		flagEndLine = oled_print_char(text[symb], x, y);
+		x = x + font_x;
+	}
+	return x;
 }
 
 
@@ -109,6 +148,26 @@ void oledPrintFloat6x8(float num, uint8_t num_after_point, uint8_t x, uint8_t y)
 		}
 	}
 	else oledPrintInteger6x8((int32_t) roundf(num), x, y);
+}
 
+void oledSetFont(uint8_t new_font){
+	switch (new_font){
+	case FONT_12x16:
+		font = FONT_12x16;
+		font_x = FONT_12x16_X;
+		font_y = FONT_12x16_Y;
+		break;
+	case FONT_6x8:
+		font = FONT_6x8;
+		font_x = FONT_6x8_X;
+		font_y = FONT_6x8_Y;
+		break;
+	default:
+		break;
+	}
+}
+
+uint8_t oledGetFont(void){
+	return font;
 }
 
