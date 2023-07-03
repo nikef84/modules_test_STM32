@@ -104,6 +104,9 @@ void oledDisplayOff(void);
 void oledUpdatePic(void);
 
 
+void oledDrawImg(uint8_t *img, uint8_t x, uint8_t y);
+
+
 /*
  * @brief	Draw the pixel on the screen.
  *

@@ -8,6 +8,8 @@ static inline void testRoutines(void) {
     i2c_test();
 #elif(PROGRAM_ROUTINE == LED_MATRIX)
     led_matrix_test();
+#elif(PROGRAM_ROUTINE == OLED_BASIC)
+    oled_basic_test();
 #elif(PROGRAM_ROUTINE == OLED_GEOM)
     oled_geom_test();
 #elif(PROGRAM_ROUTINE == OLED_TEXT)

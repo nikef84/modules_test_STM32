@@ -13,10 +13,11 @@
 #define I2C				         	1
 #define LASER_RANGEFINDER         	2
 #define LED_MATRIX		         	3
-#define OLED_GEOM					4
-#define OLED_TEXT					5
+#define OLED_BASIC					4
+#define OLED_GEOM					5
+#define OLED_TEXT					6
 
 // Selection of program to run
-#define PROGRAM_ROUTINE OLED_TEXT
+#define PROGRAM_ROUTINE OLED_BASIC
 
 #endif /* INCLUDE_COMMON_H_ */

@@ -136,6 +136,44 @@ void oledUpdatePic(void){
 	}
 }
 
+uint8_t mask[] = {0xFF, 0xFE, 0xFC, 0xF8,  0xF0, 0xE0, 0xC0, 0x80};
+
+void oledDrawImg(uint8_t *img, uint8_t x, uint8_t y){
+	uint16_t pos;
+	uint8_t elem, ost;
+//	uint8_t col = 41;
+	for (uint8_t col = 0; col < img[0]; col++){
+		if (col + x >= OLED_LENGHT) break;
+
+		for (uint8_t str = 0; str < img[1] / OLED_BYTES_PER_COLOM; str++){
+
+			pos = ((x + col) * OLED_BYTES_PER_COLOM) + ((y + str * 8) / OLED_BYTES_PER_COLOM);
+			elem =  img[str * img[0] + col + 2];
+			ost = y % 8;
+			if (ost == 0){
+				if (str * OLED_BYTES_PER_COLOM + y >= OLED_HEIGHT) break;
+				buf[pos] |= elem;
+			}
+			else{
+				if (str * OLED_BYTES_PER_COLOM + y + 1 >= OLED_HEIGHT) break;
+				buf[pos] |= (elem >> (ost)) & 0xFF;
+				buf[pos + 1] |= (elem << (8 - ost)) & mask[8 - ost];
+			}
+			//dbgPrintf("%d\r\n", pos);
+
+//			pos = ((x + col) * OLED_BYTES_PER_COLOM) + ((y + str * 8 + i) / OLED_BYTES_PER_COLOM);
+//
+//			buf[pos] |= (img[str * img[0] + col + 2] & mask[i]) ;
+
+
+
+//			buf[(x + col) * OLED_BYTES_PER_COLOM + str + y] = img[str * img[0] + col + 2];
+//			dbgPrintf("%d\r\n", (x + col) * OLED_BYTES_PER_COLOM + str + y);
+		}
+	}
+	oledUpdatePic();
+}
+
 /*
  * @brief	Draw the pixel on the screen.
  *
