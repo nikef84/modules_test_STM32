@@ -11,7 +11,7 @@ void oled_text_test(void){
     dbgPrintf("Start oled text\r\n");
     oledInit();
     oledSetFont(FONT_12x16);
-    oledPrintText("h", 10, 10);
+    oledPrintFloat(22146.51, 2, 10, 10);
     oledUpdatePic();
 
 

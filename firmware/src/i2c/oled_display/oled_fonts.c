@@ -222,7 +222,7 @@ const uint8_t font_12x16[] = {
  * @param_out	The colom of pixels.
  */
 uint8_t font6x8GetElement(char symb, uint8_t colom){
-	return font_6x8[(((uint8_t)symb) - FONT_DIFF) * FONT_6x8_COL + colom];
+	return font_6x8[(((uint8_t)symb) - FONT_DIFF) * FONT_6x8_X + colom];
 }
 
 /*
@@ -236,5 +236,5 @@ uint8_t font6x8GetElement(char symb, uint8_t colom){
  * @param_out	The colom of pixels.
  */
 uint8_t font12x16GetElement(char symb, uint8_t colom){
-	return font_12x16[(((uint8_t)symb) - FONT_DIFF) * 2 * FONT_12x16_COL + colom];
+	return font_12x16[(((uint8_t)symb) - FONT_DIFF) * 2 * FONT_12x16_X + colom];
 }
