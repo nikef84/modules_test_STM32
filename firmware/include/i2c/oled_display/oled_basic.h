@@ -29,6 +29,8 @@
 #define COLOR_WHITE						1
 #define COLOR_BLACK						0
 
+#define BITS_IN_BYTE					8
+
 
 
 /*
@@ -104,6 +106,19 @@ void oledDisplayOff(void);
 void oledUpdatePic(void);
 
 
+/*
+ * @brief	Draw the img to the screen.
+ *
+ * @param_in	img		An array in which a set of pixels is stored that needs to be lit.
+ * 						The values should be stored line by line, from left to right.
+ * 						MUST BE: img[0] = horizontal lenght of the img in bits.
+ * 								 img[1] = vertical lenght og the img in bits.
+ *
+ * 				x1		Horizontal coordinate of the upper-left corner of the img.
+ * 				y1 		Vertical coordinate of the upper-left corner of the img.
+ *
+ * @note	(x, y) = (0, 0) - Upper left coner.
+ */
 void oledDrawImg(uint8_t *img, uint8_t x, uint8_t y);
 
 

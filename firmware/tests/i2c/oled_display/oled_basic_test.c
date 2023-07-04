@@ -69,16 +69,21 @@ static uint8_t alina[] = { 128, 64,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 
+
+
+
+
 void oled_basic_test(void){
     halInit();
     chSysInit();
     debugStreamInit();
     dbgPrintf("Start oled basic\r\n");
     oledInit();
-//    oledInvertColor(true);
-//    oledDrawImg(alina, 10, 10);
+    oledInvertColor(true);
+    systime_t time = chVTGetSystemTime();
+    oledDrawImg(alina, 3, 3);
+    dbgPrintf("%d\r\n", chVTGetSystemTime() - time);
     oledUpdatePic();
-
     while (true) {
     	palToggleLine(LINE_LED3);
 		chThdSleepMilliseconds(500);

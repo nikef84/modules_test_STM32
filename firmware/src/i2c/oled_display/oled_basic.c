@@ -136,42 +136,63 @@ void oledUpdatePic(void){
 	}
 }
 
-uint8_t mask[] = {0xFF, 0xFE, 0xFC, 0xF8,  0xF0, 0xE0, 0xC0, 0x80};
 
+// To shift down the img.
+static uint8_t mask[] = {0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
+
+/*
+ * @brief	Shifts down the img.
+ *
+ * @note	 Shifts the img from 1 to 7 bits.
+ *
+ * @param_in	buf			An array which will be shifted.
+ * 				buf_size	Size of buf in bytes.
+ * 				step		The number of bits to be shifted.
+ *
+ * @notapi
+ */
+void shift_down(uint8_t *buf, uint8_t buf_size, uint8_t step){
+	uint8_t last_elem = buf_size - 1;
+	buf[last_elem] = (buf[last_elem] << step) & mask[7];
+	for (uint8_t i = 0; i < last_elem; i++){
+		buf[last_elem - i] |= (buf[last_elem - i - 1] >> (BITS_IN_BYTE - step)) & mask[step];
+		buf[last_elem - i - 1] = (buf[last_elem - i - 1] << step) & mask[7];
+	}
+}
+
+
+/*
+ * @brief	Draw the img to the screen.
+ *
+ * @param_in	img		An array in which a set of pixels is stored that needs to be lit.
+ * 						The values should be stored line by line, from left to right.
+ * 						MUST BE: img[0] = horizontal lenght of the img in bits.
+ * 								 img[1] = vertical lenght og the img in bits.
+ *
+ * 				x1		Horizontal coordinate of the upper-left corner of the img.
+ * 				y1 		Vertical coordinate of the upper-left corner of the img.
+ *
+ * @note	(x, y) = (0, 0) - Upper left coner.
+ */
 void oledDrawImg(uint8_t *img, uint8_t x, uint8_t y){
+	uint8_t bytes = img[1] / BITS_IN_BYTE;
+	uint8_t colom[BITS_IN_BYTE] = {0x00};
 	uint16_t pos;
-	uint8_t elem, ost;
-//	uint8_t col = 41;
 	for (uint8_t col = 0; col < img[0]; col++){
-		if (col + x >= OLED_LENGHT) break;
+		if (col + x >= OLED_LENGHT) break; // X is out of screen range.
 
-		for (uint8_t str = 0; str < img[1] / OLED_BYTES_PER_COLOM; str++){
+		for (uint8_t str = 0; str < bytes; str++){
+			colom[str] =  img[str * img[0] + col + 2];
+		}
 
-			pos = ((x + col) * OLED_BYTES_PER_COLOM) + ((y + str * 8) / OLED_BYTES_PER_COLOM);
-			elem =  img[str * img[0] + col + 2];
-			ost = y % 8;
-			if (ost == 0){
-				if (str * OLED_BYTES_PER_COLOM + y >= OLED_HEIGHT) break;
-				buf[pos] |= elem;
-			}
-			else{
-				if (str * OLED_BYTES_PER_COLOM + y + 1 >= OLED_HEIGHT) break;
-				buf[pos] |= (elem >> (ost)) & 0xFF;
-				buf[pos + 1] |= (elem << (8 - ost)) & mask[8 - ost];
-			}
-			//dbgPrintf("%d\r\n", pos);
+		if (y % 8 != 0) shift_down(colom, bytes, y % 8); // Shifts the colom down.
 
-//			pos = ((x + col) * OLED_BYTES_PER_COLOM) + ((y + str * 8 + i) / OLED_BYTES_PER_COLOM);
-//
-//			buf[pos] |= (img[str * img[0] + col + 2] & mask[i]) ;
-
-
-
-//			buf[(x + col) * OLED_BYTES_PER_COLOM + str + y] = img[str * img[0] + col + 2];
-//			dbgPrintf("%d\r\n", (x + col) * OLED_BYTES_PER_COLOM + str + y);
+		pos = ((x + col) * OLED_BYTES_PER_COLOM) + (y / OLED_BYTES_PER_COLOM);
+		for (uint8_t str = 0; str < bytes; str++){
+			if (pos + str == ((x + col + 1) * OLED_BYTES_PER_COLOM)) break; // y is out of screen range.
+			buf[pos + str] = colom[str];
 		}
 	}
-	oledUpdatePic();
 }
 
 /*
