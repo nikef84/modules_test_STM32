@@ -152,11 +152,13 @@ static uint8_t mask[] = {0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
  * @notapi
  */
 void shift_down(uint8_t *buf, uint8_t buf_size, uint8_t step){
-	uint8_t last_elem = buf_size - 1;
+	uint8_t last_elem = 8 - 1;
 	buf[last_elem] = (buf[last_elem] << step) & mask[7];
-	for (uint8_t i = 0; i < last_elem; i++){
+	for (uint8_t i = 0; i < OLED_BYTES_PER_COLOM - 1; i++){
 		buf[last_elem - i] |= (buf[last_elem - i - 1] >> (BITS_IN_BYTE - step)) & mask[step];
-		buf[last_elem - i - 1] = (buf[last_elem - i - 1] << step) & mask[7];
+		if (last_elem - i != 7) {
+			buf[last_elem - i - 1] = (buf[last_elem - i - 1] << step) & mask[7];
+		}
 	}
 }
 
@@ -176,22 +178,27 @@ void shift_down(uint8_t *buf, uint8_t buf_size, uint8_t step){
  */
 void oledDrawImg(uint8_t *img, uint8_t x, uint8_t y){
 	uint8_t bytes = img[1] / BITS_IN_BYTE;
-	uint8_t colom[BITS_IN_BYTE] = {0x00};
+	uint8_t colom[OLED_BYTES_PER_COLOM] = {0x00};
 	uint16_t pos;
 	for (uint8_t col = 0; col < img[0]; col++){
 		if (col + x >= OLED_LENGHT) break; // X is out of screen range.
-
-		for (uint8_t str = 0; str < bytes; str++){
-			colom[str] =  img[str * img[0] + col + 2];
-		}
-
-		if (y % 8 != 0) shift_down(colom, bytes, y % 8); // Shifts the colom down.
+		for (uint8_t i = 0; i < OLED_BYTES_PER_COLOM; i++) colom[i] = 0;
 
 		pos = ((x + col) * OLED_BYTES_PER_COLOM) + (y / OLED_BYTES_PER_COLOM);
 		for (uint8_t str = 0; str < bytes; str++){
-			if (pos + str == ((x + col + 1) * OLED_BYTES_PER_COLOM)) break; // y is out of screen range.
-			buf[pos + str] = colom[str];
+			if (pos + str == ((x + col + 1) * OLED_BYTES_PER_COLOM))break; // y is out of screen range.
+			colom[(pos + str) % 8] =  img[str * img[0] + col + 2];
 		}
+
+
+		if (y % 8 != 0) shift_down(colom, bytes, y % 8); // Shifts the colom down.
+
+		for (uint8_t i = 0; i < 8; i++) dbgPrintf("%d ", colom[i]);
+		dbgPrintf("\r\n");
+//		pos = ((x + col) * OLED_BYTES_PER_COLOM);
+//		for (uint8_t str = 0; str < OLED_BYTES_PER_COLOM; str++){
+//			buf[pos + str] = colom[str];
+//		}
 	}
 }
 

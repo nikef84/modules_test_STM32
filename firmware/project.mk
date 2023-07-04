@@ -4,6 +4,7 @@ PROJECT_CSRC 	= 	src/main.c \
 					src/i2c/i2c_lld.c \
 					src/i2c/laser_rangefinder.c \
 					src/i2c/led_matrix.c \
+					src/i2c/oled_display/oled_basic_img.c \
 					src/i2c/oled_display/oled_basic.c \
 					src/i2c/oled_display/oled_fonts.c \
 					src/i2c/oled_display/oled_text.c \
