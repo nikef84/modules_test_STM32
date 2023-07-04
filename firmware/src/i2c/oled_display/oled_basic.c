@@ -136,9 +136,9 @@ void oledUpdatePic(void){
 	}
 }
 
-
 // To shift down the img.
 static uint8_t mask[] = {0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
+
 
 /*
  * @brief	Shifts down the img.
@@ -151,7 +151,7 @@ static uint8_t mask[] = {0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
  *
  * @notapi
  */
-void shift_down(uint8_t *buf, uint8_t buf_size, uint8_t step){
+void shift_down(uint8_t *buf, uint8_t step){
 	uint8_t last_elem = 8 - 1;
 	buf[last_elem] = (buf[last_elem] << step) & mask[7];
 	for (uint8_t i = 0; i < OLED_BYTES_PER_COLOM - 1; i++){
@@ -184,16 +184,20 @@ void oledDrawImg(uint8_t *img, uint8_t x, uint8_t y){
 		if (col + x >= OLED_LENGHT) break; // X is out of screen range.
 		for (uint8_t i = 0; i < OLED_BYTES_PER_COLOM; i++) colom[i] = 0;
 
+
 		pos = ((x + col) * OLED_BYTES_PER_COLOM) + (y / OLED_BYTES_PER_COLOM);
 		for (uint8_t str = 0; str < bytes; str++){
 			if (pos + str == ((x + col + 1) * OLED_BYTES_PER_COLOM))break; // y is out of screen range.
 			colom[(pos + str) % 8] =  img[str * img[0] + col + 2];
 		}
+		for (uint8_t i = 0; i < 8; i++) dbgPrintf("%d ", colom[i]);
+		dbgPrintf("\r\n");
 
 
-		if (y % 8 != 0) shift_down(colom, bytes, y % 8); // Shifts the colom down.
+		if (y % 8 != 0) shift_down(colom, y % 8); // Shifts the colom down.
 
 		for (uint8_t i = 0; i < 8; i++) dbgPrintf("%d ", colom[i]);
+		dbgPrintf("\r\n");
 		dbgPrintf("\r\n");
 //		pos = ((x + col) * OLED_BYTES_PER_COLOM);
 //		for (uint8_t str = 0; str < OLED_BYTES_PER_COLOM; str++){
