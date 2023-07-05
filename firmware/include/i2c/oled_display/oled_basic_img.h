@@ -39,6 +39,7 @@
 #define IMG_RADIO_ON				33
 #define IMG_SETTINGS				34
 #define IMG_MESSAGE					35
+#define IMG_HEART					36
 
 
 void oledDrawBasicImg(uint8_t basic_img, uint8_t x, uint8_t y);

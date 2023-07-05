@@ -178,5 +178,10 @@ uint8_t oledGetColorDraw(void);
  */
 void oledClear(void);
 
+/*
+ * @brief	Clears the buffer.
+ */
+void oledClearBuf(void);
+
 
 #endif /* INCLUDE_I2C_OLED_DISPLAY_OLED_BASIC_H_ */

@@ -190,6 +190,11 @@ static uint8_t message[] = {
     0x3C, 0x38, 0x38, 0x38, 0x3F, 0x3F, 0x3F, 0x3F
 };
 
+static uint8_t heart[] = {
+	8, 8,
+	0x1C, 0x3E, 0x7E, 0xFC, 0xFC, 0x7E, 0x3E, 0x1C
+};
+
 void oledDrawBasicImg(uint8_t basic_img, uint8_t x, uint8_t y){
 	switch (basic_img){
 	case IMG_ALARM:
@@ -299,6 +304,9 @@ void oledDrawBasicImg(uint8_t basic_img, uint8_t x, uint8_t y){
 		break;
 	case IMG_MESSAGE:
 		oledDrawImg(message, x, y);
+		break;
+	case IMG_HEART:
+		oledDrawImg(heart, x, y);
 		break;
 	}
 
