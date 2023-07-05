@@ -16,4 +16,6 @@ void oled_basic_test(void);
 void oled_geom_test(void);
 void oled_text_test(void);
 
+void snake_test(void);
+
 #endif /* INCLUDE_TESTS_H_ */

@@ -16,6 +16,8 @@ static inline void testRoutines(void) {
     oled_geom_test();
 #elif(PROGRAM_ROUTINE == OLED_TEXT)
     oled_text_test();
+#elif(PROGRAM_ROUTINE == SNAKE)
+    snake_test();
 #endif
 }
 

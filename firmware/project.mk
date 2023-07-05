@@ -10,6 +10,7 @@ PROJECT_CSRC 	= 	src/main.c \
 					src/i2c/oled_display/oled_fonts.c \
 					src/i2c/oled_display/oled_text.c \
 					src/i2c/oled_display/oled_geom.c \
+					src/i2c/snake/snake.c \
 
 					
 
@@ -22,6 +23,7 @@ TESTSRC 	= 		tests/i2c/laser_rangefinder_test.c \
 					tests/i2c/oled_display/oled_basic_test.c \
 					tests/i2c/oled_display/oled_geom_test.c \
 					tests/i2c/oled_display/oled_text_test.c \
+					tests/i2c/snake/snake_test.c \
 					
 					
 
@@ -31,6 +33,7 @@ PROJECT_CPPSRC 	=
 PROJECT_INCDIR	= 	include \
 				  	include/i2c \
 				  	include/i2c/oled_display \
+				  	include/i2c/snake \
 				  	
  
 

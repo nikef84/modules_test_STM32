@@ -17,8 +17,9 @@
 #define OLED_BASIC					5
 #define OLED_GEOM					6
 #define OLED_TEXT					7
+#define SNAKE						8
 
 // Selection of program to run
-#define PROGRAM_ROUTINE OLED_ANIMATION_CAT
+#define PROGRAM_ROUTINE SNAKE
 
 #endif /* INCLUDE_COMMON_H_ */
