@@ -9,6 +9,7 @@ void oled_animation_cat_test(void){
     debugStreamInit();
     dbgPrintf("Start oled animation_cat\r\n");
     oledInit();
+    oledInvertColor(true);
 
     while (true) {
     	oledClearBuf();
