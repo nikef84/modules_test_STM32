@@ -2,6 +2,7 @@
 #define INCLUDE_I2C_SNAKE_SNAKE_H_
 
 #include "oled_geom.h"
+#include "oled_text.h"
 
 typedef struct{
 	uint8_t x;
@@ -27,6 +28,6 @@ typedef struct{
 
 void snakeInit(void);
 
-void snakeMove(void);
+void snakeGame(void);
 
 #endif /* INCLUDE_I2C_SNAKE_SNAKE_H_ */
