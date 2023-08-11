@@ -18,6 +18,8 @@ static inline void testRoutines(void) {
     oled_text_test();
 #elif(PROGRAM_ROUTINE == SNAKE)
     snake_test();
+#elif(PROGRAM_ROUTINE == SNAKE_BUTTON)
+    snake_button_test();
 #endif
 }
 
