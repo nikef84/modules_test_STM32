@@ -4,6 +4,7 @@
 #include "oled_geom.h"
 #include "oled_text.h"
 #include "buttons.h"
+#include "stdlib.h"
 
 typedef struct{
 	uint8_t x;
@@ -14,8 +15,8 @@ typedef struct{
 #define FRAME_UP_LEFT_X 1
 #define FRAME_UP_LEFT_Y 1
 
-#define FRAME_BOT_RIGHT_X 126
-#define FRAME_BOT_RIGHT_Y 62
+#define FRAME_BOT_RIGHT_X 124
+#define FRAME_BOT_RIGHT_Y 58
 
 
 #define SNAKE_SIZE_MAX 50

@@ -14,12 +14,12 @@
 // Possible buttons.
 typedef  enum
 {
-  VOID   = 0, // Inital value
-  CENTER = 1,
-  RIGHT  = 2,
-  BOTTOM = 3,
-  LEFT   = 4,
-  TOP    = 5
+	VOID   = 0, // Inital value
+	RIGHT = 1,
+	TOP  = 2,
+	LEFT = 3,
+	BOTTOM   = 4,
+	CENTER    = 5
 }buttons_t;
 
 
