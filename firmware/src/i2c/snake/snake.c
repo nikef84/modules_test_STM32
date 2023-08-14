@@ -8,6 +8,7 @@ static snakePartsCoord snakeCoords[2] = {
 	.y = 0}
 };
 
+static buttons_t snakeDiriction = LEFT;
 
 static uint8_t snakeCurrentSize = 0;
 
@@ -33,12 +34,15 @@ void snake_start(void){
 	snakeCurrentSize = 3;
 
 	oledUpdatePic();
+	while (buttonsGetFlagNewVal() == false)chThdSleepMilliseconds(5);
 }
 
 void snakeInit(void){
 	oledInit();
 
 	snake_start();
+	buttonsInit();
+	chThdSleepMilliseconds(5);
 }
 
 void snake_clear_last_part(void){
@@ -51,6 +55,12 @@ void snake_clear_last_part(void){
 
 void snake_move(void){
 	snake_clear_last_part();
+	uint8_t x_step = 0;
+	uint8_t y_step = 0;
+	switch (snakeDiriction){
+	case LEFT:
+
+	}
 	snakeCoords[1].x += SNAKE_SIZE_PART;
 	snakeCoords[0].x += SNAKE_SIZE_PART;
 	oledDrawRect(snakeCoords[0].x, snakeCoords[0].y,
@@ -71,10 +81,16 @@ void draw_game_over(void){
 	oledPrintText("Game over!", 5, 20);
 }
 
+void snake_set_direction(void){
+	if (buttonsGetFlagNewVal() == true){
+
+	}
+}
+
 void snakeGame(void){
 	if (crashFlag == false) {
-	 snake_move();
-	 crashFlag = crash_check();
+		snake_move();
+		crashFlag = crash_check();
 	}
 	if (crashFlag == true) draw_game_over();
 }

@@ -12,8 +12,8 @@ void snake_test(void){
 	snakeInit();
 
 	while (true) {
-//		snakeGame();
-//		oledUpdatePic();
+		snakeGame();
+		oledUpdatePic();
 		palToggleLine(LINE_LED3);
 		chThdSleepMilliseconds(300);
 	}

@@ -2,7 +2,7 @@
 #include "led_matrix.h"
 
 
-bool flag = false;
+static bool flag = false;
 
 void palcb_button(void* args){
     args = args;

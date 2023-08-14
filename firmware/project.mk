@@ -25,7 +25,7 @@ TESTSRC 	= 		tests/i2c/laser_rangefinder_test.c \
 					tests/i2c/oled_display/oled_geom_test.c \
 					tests/i2c/oled_display/oled_text_test.c \
 					tests/i2c/snake/snake_test.c \
-					tests/other/button_test.c \
+					tests/other/buttons_test.c \
 					
 					
 

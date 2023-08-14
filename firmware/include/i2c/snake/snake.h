@@ -3,6 +3,7 @@
 
 #include "oled_geom.h"
 #include "oled_text.h"
+#include "buttons.h"
 
 typedef struct{
 	uint8_t x;
