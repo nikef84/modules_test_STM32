@@ -12,6 +12,13 @@ typedef struct{
 } snakePartsCoord;
 
 
+typedef  enum
+{
+	READY   = 0, // Inital value
+	LOSE = 1,
+	WIN  = 2
+}gamestatus_t;
+
 #define FRAME_UP_LEFT_X 1
 #define FRAME_UP_LEFT_Y 1
 
@@ -19,7 +26,7 @@ typedef struct{
 #define FRAME_BOT_RIGHT_Y 58
 
 
-#define SNAKE_SIZE_MAX 50
+#define SNAKE_SIZE_MAX 5
 
 #define SNAKE_SIZE_BLOCK 4
 #define SNAKE_SIZE_BETWEEN_PARTS 2
