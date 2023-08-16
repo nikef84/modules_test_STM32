@@ -11,10 +11,17 @@ void snake_test(void){
 	dbgPrintf("Start snake\r\n");
 	snakeInit();
 
+	systime_t time = chVTGetSystemTime();
 	while (true) {
+
+		systime_t time1 = chVTGetSystemTime();
 		snakeGame();
+
+
 		oledUpdatePic();
 		palToggleLine(LINE_LED3);
-		chThdSleepMilliseconds(150);
+		time = chThdSleepUntilWindowed( time, time + TIME_MS2I( SNAKE_GAME_PERIOD ) );
+		dbgPrintf("%d\r\n", chVTGetSystemTime() - time1);
+
 	}
 }
